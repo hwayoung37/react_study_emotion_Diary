@@ -7,6 +7,8 @@ import Diary from "./pages/Diary";
 import Edit from "./pages/Edit";
 import New from "./pages/New";
 
+//test
+
 function App() {
   return (
     <BrowserRouter>
