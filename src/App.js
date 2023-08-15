@@ -1,69 +1,95 @@
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-
 import Home from "./pages/Home";
 import Diary from "./pages/Diary";
 import Edit from "./pages/Edit";
 import New from "./pages/New";
-import MyButton from "./components/MyButton";
-import MyHeader from "./components/MyHeader";
+import React, { useReducer, useRef } from "react";
 
-//test
+//프로젝트 전반적으로 사용될 일기 데이터 state관리 로직
+const reducer = (state, action) => {
+  let newState = [];
+  switch (action.type) {
+    case "INIT": {
+      return action.data;
+    }
+    case "CREATE": {
+      newState = [action.data, ...state]; //기존 state에 생성된 데이터 추가
+      break; //default까지 수행되지 않도록
+    }
+    case "REMOVE": {
+      newState = state.filter((it) => it.id !== action.targetId);
+      break;
+    }
+    case "EDIT": {
+      newState = state.map((it) =>
+        it.id === action.data.id ? { ...action.data } : it
+      );
+      break;
+    }
+    default:
+      return state;
+  }
+  return newState;
+};
+
+//데이터 state와 state의 dispatch함수를 컴포넌트 전역에 공급하기 위한 context만들기 -> Provider로 공급하기
+export const DiaryStateContext = React.createContext();
+export const DiaryDispathContext = React.createContext();
 
 function App() {
-  //이미지 파일이 안뜬다면
-  const env = process.env;
-  env.PUBLIC_URL = env.PUBLIC_URL || ""; //env.PUBLIC_URL에 env.PUBLIC_URL가 존재한다면 담고, 아니면 비워라
+  const [data, dispatch] = useReducer(reducer, []);
+
+  const dataId = useRef(0); //데이터의 아이디
+
+  //create : 새로운 데이터를 받아서 일기객체(data)로 만들어준다
+  const onCreate = (date, content, emotion) => {
+    dispatch({
+      type: "CREATE",
+      data: {
+        id: dataId.current,
+        date: new Date(date).getTime(),
+        content,
+        emotion,
+      },
+    });
+    dataId.current += 1;
+  };
+
+  //remove
+  const onRemove = (targetId) => {
+    dispatch({ type: "REMOVE", targetId });
+  };
+
+  //edit
+  const onEdit = (targetId, date, content, emotion) => {
+    dispatch({
+      type: "EDIT",
+      data: {
+        id: targetId,
+        date: new Date(date).getTime(),
+        content,
+        emotion,
+      },
+    });
+  };
 
   return (
-    <BrowserRouter>
-      <div className="App">
-        <MyHeader
-          headText={"App"}
-          // props에 컴포넌트를 넣을 수도 있다
-          leftChild={
-            <MyButton text={"왼쪽 버튼"} onClick={() => alert("왼쪽클릭")} />
-          }
-          rightChild={
-            <MyButton
-              text={"오른쪽 버튼"}
-              onClick={() => alert("오른쪽클릭")}
-            />
-          }
-        />
-        <h2>App.js</h2>
-
-        <MyButton
-          text={"버튼"}
-          onClick={() => {
-            alert("버튼 클릭");
-          }}
-          type={"positive"}
-        />
-        <MyButton
-          text={"버튼"}
-          onClick={() => {
-            alert("버튼 클릭");
-          }}
-          type={"negative"}
-        />
-        <MyButton
-          text={"버튼"}
-          onClick={() => {
-            alert("버튼 클릭");
-          }}
-        />
-        <br />
-        {/* process.env.PUBLIC_URL : public 디렉토리에 바로 접근 */}
-        {/* <img src={process.env.PUBLIC_URL + `/assets/emotion1.png`} /> */}
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/new" element={<New />} />
-          <Route path="/edit" element={<Edit />} />
-          <Route path="/diary/:id" element={<Diary />} />
-        </Routes>
-      </div>
-    </BrowserRouter>
+    <DiaryStateContext.Provider value={data}>
+      <DiaryDispathContext.Provider value={(onCreate, onEdit, onRemove)}>
+        {/* 데이터 state를 변화시키는 dispatch함수를 객체로 전달 */}
+        <BrowserRouter>
+          <div className="App">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/new" element={<New />} />
+              <Route path="/edit" element={<Edit />} />
+              <Route path="/diary/:id" element={<Diary />} />
+            </Routes>
+          </div>
+        </BrowserRouter>
+      </DiaryDispathContext.Provider>
+    </DiaryStateContext.Provider>
   );
 }
 
