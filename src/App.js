@@ -37,8 +37,43 @@ const reducer = (state, action) => {
 export const DiaryStateContext = React.createContext();
 export const DiaryDispathContext = React.createContext();
 
+// ✅ 필터링 시 출력 데이터 확인
+const dummyData = [
+  {
+    id: 1,
+    emotion: 1,
+    content: "오늘의 일기 1번",
+    date: 1692103867921,
+    // console.log(new Date().getTime());
+  },
+  {
+    id: 2,
+    emotion: 2,
+    content: "오늘의 일기 2번",
+    date: 1692103867922,
+  },
+  {
+    id: 3,
+    emotion: 3,
+    content: "오늘의 일기 3번",
+    date: 1692103867923,
+  },
+  {
+    id: 4,
+    emotion: 4,
+    content: "오늘의 일기 4번",
+    date: 1692103867924,
+  },
+  {
+    id: 5,
+    emotion: 5,
+    content: "오늘의 일기 5번",
+    date: 1692103867925,
+  },
+];
+
 function App() {
-  const [data, dispatch] = useReducer(reducer, []);
+  const [data, dispatch] = useReducer(reducer, dummyData);
 
   const dataId = useRef(0); //데이터의 아이디
 
