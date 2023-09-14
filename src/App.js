@@ -14,6 +14,8 @@ const reducer = (state, action) => {
       return action.data;
     }
     case "CREATE": {
+      // const newItem = { ...action.data };
+      // newState = [newItem, ...state];
       newState = [action.data, ...state]; //기존 state에 생성된 데이터 추가
       break; //default까지 수행되지 않도록
     }
@@ -35,7 +37,7 @@ const reducer = (state, action) => {
 
 //데이터 state와 state의 dispatch함수를 컴포넌트 전역에 공급하기 위한 context만들기 -> Provider로 공급하기
 export const DiaryStateContext = React.createContext();
-export const DiaryDispathContext = React.createContext();
+export const DiaryDispatchContext = React.createContext();
 
 // ✅ 필터링 시 출력 데이터 확인
 const dummyData = [
@@ -43,32 +45,31 @@ const dummyData = [
     id: 1,
     emotion: 1,
     content: "오늘의 일기 1번",
-    date: 1692103867921,
-    // console.log(new Date().getTime());
+    date: 1694649600000,
   },
   {
     id: 2,
     emotion: 2,
     content: "오늘의 일기 2번",
-    date: 1692103867922,
+    date: 1694649600002,
   },
   {
     id: 3,
     emotion: 3,
     content: "오늘의 일기 3번",
-    date: 1692103867923,
+    date: 1694649600003,
   },
   {
     id: 4,
     emotion: 4,
     content: "오늘의 일기 4번",
-    date: 1692103867924,
+    date: 1694649600004,
   },
   {
     id: 5,
     emotion: 5,
     content: "오늘의 일기 5번",
-    date: 1692103867925,
+    date: 1694649600005,
   },
 ];
 
@@ -80,7 +81,7 @@ function App() {
   //create : 새로운 데이터를 받아서 일기객체(data)로 만들어준다
   const onCreate = (date, content, emotion) => {
     dispatch({
-      type: "CREATE",
+      type: "CREATE", //✅이 타입은 언제 사용? reducer에서 이 함수가 어떻게 동작하는지 타입으로 설정
       data: {
         id: dataId.current,
         date: new Date(date).getTime(),
@@ -111,7 +112,7 @@ function App() {
 
   return (
     <DiaryStateContext.Provider value={data}>
-      <DiaryDispathContext.Provider value={(onCreate, onEdit, onRemove)}>
+      <DiaryDispatchContext.Provider value={{ onCreate, onEdit, onRemove }}>
         {/* 데이터 state를 변화시키는 dispatch함수를 객체로 전달 */}
         <BrowserRouter>
           <div className="App">
@@ -123,7 +124,7 @@ function App() {
             </Routes>
           </div>
         </BrowserRouter>
-      </DiaryDispathContext.Provider>
+      </DiaryDispatchContext.Provider>
     </DiaryStateContext.Provider>
   );
 }
