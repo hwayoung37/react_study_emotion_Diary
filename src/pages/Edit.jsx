@@ -1,39 +1,46 @@
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { DiaryStateContext } from "../App";
+import DiaryEditor from "../components/DiaryEditor";
 
-// ✨React Router Dom의 유용한 기능
-// 1. Path Variable(useParams)   2. Query String(페이지 라우팅에 영향X)   3. Page Moving(useNavigate)
-// query : 웹페이지에 데이터를 전달하는 가장 간단한 방법. 물음표와 키/값을 사용하여 데이터 전달.
-
+// 원본 데이터를 가져오는 작업
 const Edit = () => {
+  const [originData, setOriginData] = useState();
+
   const navigate = useNavigate();
   // ✅useNavigate : 페이지를 이동시키는 함수를 반환
+  const { id } = useParams();
+  // ✅useParams : PathVariable을 Edit 컴포넌트에서 받아와야 한다
+  // ✅useSearchParams : 쿼리스트링
 
-  const [searchParams, setSearchParams] = useSearchParams();
-  // ✅setSearchParams : searchParams를 변경시킬 수 있다 = 실시간으로 query string 변경 가능
+  const diaryList = useContext(DiaryStateContext);
+  //DiaryStateContext가 제공하는 diaryList 데이터를 받아온다
 
-  // id가져오기 : 전달받은 query string을 꺼내 올 수 있다.
-  const id = searchParams.get("id");
-  console.log(id);
+  useEffect(() => {
+    if (diaryList.length >= 1) {
+      const targetDiary = diaryList.find(
+        (it) => parseInt(it.id) === parseInt(id) //params로 가져온 id가 string일 수 있으므로 형변환
+      );
+      console.log(targetDiary);
 
-  const mode = searchParams.get("mode");
-  console.log(mode);
+      if (targetDiary) {
+        setOriginData(targetDiary);
+      } else {
+        //targetDiary가 없을 때 = undefined일 때 = false일 때 홈으로
+        navigate("/", { replace: true });
+      }
+    }
+  }, [id, diaryList]);
 
   return (
     <div>
-      <h1>Edit</h1>
-      <p>이곳은 Edit 입니다.</p>
-      <button onClick={() => setSearchParams({ who: "winterlood" })}>
-        qs 바꾸기
-      </button>
-      <button
-        onClick={() => {
-          navigate(-1);
-        }}
-      >
-        뒤로가기
-      </button>
+      {/* originData가 있으면 <DiaryEditor /> 출력 */}
+      {originData && <DiaryEditor isEdit={true} originData={originData} />}
     </div>
   );
 };
 
 export default Edit;
+
+// ⛔ No routes matched location "/edit/1" - 이 경로에 매치되는 컴포넌트가 설정한 라우팅에는 없다
+// <Route path="/edit/:id" element={<Edit />} />
