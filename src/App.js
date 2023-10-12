@@ -76,7 +76,9 @@ const dummyData = [
 function App() {
   const [data, dispatch] = useReducer(reducer, dummyData);
 
-  const dataId = useRef(0); //데이터의 아이디
+  //⛔Warning: Encountered two children with the same key, `1`.
+  //생성되는 일기의 id를 0부터 만들어서 기존 더미데이터의 id와 겹친다. -> 리액트 디벨로퍼 툴스 확인
+  const dataId = useRef(6); //데이터의 아이디
 
   //create : 새로운 데이터를 받아서 일기객체(data)로 만들어준다
   const onCreate = (date, content, emotion) => {
