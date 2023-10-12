@@ -26,10 +26,15 @@ const Home = () => {
         1 //1일
       ).getTime();
 
+      //⛔월의 마지막 일에 일기 작성 안됨
+      //new Date는 시간까지 설정할 수 있는데, 이렇게 시간까지 설정해야 마지막일의 일기를 작성 할 수 있다
       const lastDay = new Date( //현재월의 마지막일
         curDate.getFullYear(),
         curDate.getMonth() + 1,
-        0 //마지막일
+        0, //마지막일
+        23,
+        59,
+        59
       ).getTime();
 
       setData(
