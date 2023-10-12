@@ -1,3 +1,4 @@
+import React from "react";
 import MyButton from "./MyButton";
 import { useNavigate } from "react-router-dom";
 
@@ -43,4 +44,5 @@ const DiaryItem = ({ id, emotion, content, date }) => {
   );
 };
 
-export default DiaryItem;
+export default React.memo(DiaryItem);
+//item컴포넌트의 부모컴포넌트에서 필터값이 변경되면 list컴포넌트에서 관리하는 state의 값이 변경되어 불필요한 렌더링이 일어나는걸 막음

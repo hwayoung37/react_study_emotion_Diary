@@ -1,8 +1,9 @@
+import React from "react";
 const EmotionItem = ({
   emotion_id,
   emotion_img,
   emotion_descript,
-  onClick,
+  onClick, //전달받는 요소 중 함수가 있으므로 useCallback처리
   isSelected,
 }) => {
   return (
@@ -19,4 +20,4 @@ const EmotionItem = ({
   );
 };
 
-export default EmotionItem;
+export default React.memo(EmotionItem);

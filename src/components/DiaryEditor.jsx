@@ -1,6 +1,6 @@
 // 새일기쓰기 페이지와 수정하기 페이지의 형태가 동일하므로 컴포넌트를 만들어서 재사용 가능하도록
 import { useNavigate } from "react-router-dom";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState, useCallback } from "react";
 import { DiaryDispatchContext } from "./../App.js";
 
 import { getStringDate } from "../util/date.js";
@@ -20,9 +20,9 @@ const DiaryEditor = ({ isEdit, originData }) => {
 
   // <emotionItem>을 클릭하면 onClick prop으로 emotion_id를 받으면서
   // 현재 어떤 emotion이 선택됐는지 알 수 있다
-  const handleClickEmote = (emotion) => {
+  const handleClickEmote = useCallback((emotion) => {
     setEmotion(emotion);
-  };
+  }, []);
 
   const navigate = useNavigate();
 

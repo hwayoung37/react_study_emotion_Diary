@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import MyButton from "./MyButton";
 import { useNavigate } from "react-router-dom";
 import DiaryItem from "./DiaryItem";
@@ -14,9 +14,10 @@ const filterOptionList = [
   { value: "bad", name: "안좋은 감정만" },
 ];
 
-// 리스트 출력 옵션 컴포넌트
-// value: select가 어떤것을 선택하고 있는지
-const ControlMenu = ({ value, onChange, optionList }) => {
+// ✅ React.memo : 전달되는 prop이 바뀌지 않으면 렌더링 일어나지 않도록 최적화하는 기법
+// ⛔prop 중 onChange 함수는 부모컴포넌트가 리렌더링되면 useMemo가 정상적으로 동작하지 않는데 여기서는 왜 정상동작하는지?(onChange가 리렌더링 발생하지 않는 이유?)
+// useState가 반환하는 상태 변환함수를 받고있기 때문. 따로 핸들링 하는 함수를 만들어서 넣는다면 그 함수는 새로 렌더링 되므로 리액트메모 정상동작 하지 않음!
+const ControlMenu = React.memo(({ value, onChange, optionList }) => {
   return (
     <select
       className="ControlMenu"
@@ -30,7 +31,7 @@ const ControlMenu = ({ value, onChange, optionList }) => {
       ))}
     </select>
   );
-};
+});
 
 const DiaryList = ({ diaryList }) => {
   const navigate = useNavigate();
