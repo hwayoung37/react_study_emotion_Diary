@@ -36,7 +36,7 @@ const DiaryList = ({ diaryList }) => {
   const navigate = useNavigate();
 
   //정렬기준
-  const [sortType, setSortType] = useState("lastest");
+  const [sortType, setSortType] = useState("latest");
   //감정필터
   const [filter, setFilter] = useState("all");
 
@@ -53,7 +53,7 @@ const DiaryList = ({ diaryList }) => {
 
     //데이터의 날짜를 비교해서 정렬시키는 함수
     const compare = (a, b) => {
-      if (sortType === "lastest") {
+      if (sortType === "latest") {
         return parseInt(b.date) - parseInt(a.date); //문자열이 들어올 수 있으므로 숫자형으로 바꿔주기
       } else {
         return parseInt(a.date) - parseInt(b.date);
