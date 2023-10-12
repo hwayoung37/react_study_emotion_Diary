@@ -16,7 +16,7 @@ const DiaryEditor = ({ isEdit, originData }) => {
   const [emotion, setEmotion] = useState(3);
   const [date, setDate] = useState(getStringDate(new Date()));
 
-  const { onCreate, onEdit } = useContext(DiaryDispatchContext);
+  const { onCreate, onEdit, onRemove } = useContext(DiaryDispatchContext);
 
   // <emotionItem>을 클릭하면 onClick prop으로 emotion_id를 받으면서
   // 현재 어떤 emotion이 선택됐는지 알 수 있다
@@ -46,6 +46,13 @@ const DiaryEditor = ({ isEdit, originData }) => {
     navigate("/", { replace: true }); // 홈으로 돌아가게 ✅replace: true 작성 완료 후 뒤로가기 못하도록
   };
 
+  const handleRemove = () => {
+    if (window.confirm("정말 삭제하시겠습니까?")) {
+      onRemove(originData.id);
+      navigate("/", { replace: true });
+    }
+  };
+
   useEffect(() => {
     if (isEdit) {
       //idEdit가 있을때 이 페이지가 렌더링 됨
@@ -63,6 +70,15 @@ const DiaryEditor = ({ isEdit, originData }) => {
           <MyButton text={"< 뒤로가기"} onClick={() => navigate(-1)} />
         }
         // Navigate(-1) : 뒤로가기
+        rightChild={
+          isEdit && (
+            <MyButton
+              text={"삭제하기"}
+              type={"negative"}
+              onClick={handleRemove}
+            />
+          )
+        }
       />
       <section>
         {/* section 태그는 시맨틱태그 : 의미론적 태그로 div 태그와 같음 */}
