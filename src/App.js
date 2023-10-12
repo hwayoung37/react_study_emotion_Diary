@@ -4,7 +4,7 @@ import Home from "./pages/Home";
 import Diary from "./pages/Diary";
 import Edit from "./pages/Edit";
 import New from "./pages/New";
-import React, { useReducer, useRef } from "react";
+import React, { useEffect, useReducer, useRef } from "react";
 
 //프로젝트 전반적으로 사용될 일기 데이터 state관리 로직
 const reducer = (state, action) => {
@@ -32,6 +32,9 @@ const reducer = (state, action) => {
     default:
       return state;
   }
+
+  // ✅일기 저장하기 : newState가 변화할 때마다 로컬스토리지에 넣는다.
+  localStorage.setItem("diary", JSON.stringify(newState));
   return newState;
 };
 
@@ -39,46 +42,26 @@ const reducer = (state, action) => {
 export const DiaryStateContext = React.createContext();
 export const DiaryDispatchContext = React.createContext();
 
-// ✅ 필터링 시 출력 데이터 확인
-const dummyData = [
-  {
-    id: 1,
-    emotion: 1,
-    content: "오늘의 일기 1번",
-    date: 1697649700000,
-  },
-  {
-    id: 2,
-    emotion: 2,
-    content: "오늘의 일기 2번",
-    date: 1697649700002,
-  },
-  {
-    id: 3,
-    emotion: 3,
-    content: "오늘의 일기 3번",
-    date: 1697649700003,
-  },
-  {
-    id: 4,
-    emotion: 4,
-    content: "오늘의 일기 4번",
-    date: 1697649700004,
-  },
-  {
-    id: 5,
-    emotion: 5,
-    content: "오늘의 일기 5번",
-    date: 1697649700005,
-  },
-];
-
+// ✅컴포넌트가 마운트 되었을 때 로컬스토리지에 있는 데이터를 꺼내와서 data state의 초기값으로 사용하도록
 function App() {
-  const [data, dispatch] = useReducer(reducer, dummyData);
+  const [data, dispatch] = useReducer(reducer, []);
+
+  useEffect(() => {
+    const localData = localStorage.getItem("diary");
+    if (localData) {
+      //새로 작성할 일기 id 설정 : 가장 최신으로 정렬한 뒤 그 일기의 id + 1
+      const diaryList = JSON.parse(localData).sort(
+        (a, b) => parseInt(b.id) - parseInt(a.id)
+      );
+      dataId.current = parseInt(diaryList[0].id + 1);
+
+      dispatch({ type: "INIT", data: diaryList });
+    }
+  }, []);
 
   //⛔Warning: Encountered two children with the same key, `1`.
   //생성되는 일기의 id를 0부터 만들어서 기존 더미데이터의 id와 겹친다. -> 리액트 디벨로퍼 툴스 확인
-  const dataId = useRef(6); //데이터의 아이디
+  const dataId = useRef(0); //데이터의 아이디
 
   //create : 새로운 데이터를 받아서 일기객체(data)로 만들어준다
   const onCreate = (date, content, emotion) => {
