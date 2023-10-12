@@ -6,15 +6,18 @@ import DiaryEditor from "../components/DiaryEditor";
 // 원본 데이터를 가져오는 작업
 const Edit = () => {
   const [originData, setOriginData] = useState();
-
   const navigate = useNavigate();
   // ✅useNavigate : 페이지를 이동시키는 함수를 반환
   const { id } = useParams();
   // ✅useParams : PathVariable을 Edit 컴포넌트에서 받아와야 한다
   // ✅useSearchParams : 쿼리스트링
-
   const diaryList = useContext(DiaryStateContext);
   //DiaryStateContext가 제공하는 diaryList 데이터를 받아온다
+
+  useEffect(() => {
+    const titleElement = document.getElementsByTagName("title")[0];
+    titleElement.innerHTML = `감정 일기장 - ${id}번 일기 수정`;
+  }, []);
 
   useEffect(() => {
     if (diaryList.length >= 1) {

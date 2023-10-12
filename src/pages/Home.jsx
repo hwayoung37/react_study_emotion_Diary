@@ -17,6 +17,11 @@ const Home = () => {
   const headText = `${curDate.getFullYear()}년 ${curDate.getMonth() + 1}월`;
   //getFullYear: 연도 가져오기, getMonth: 월 가져오기(1월은 0월로 나옴 그래서 +1 해주기)
 
+  useEffect(() => {
+    const titleElement = document.getElementsByTagName("title")[0];
+    titleElement.innerHTML = `감정 일기장`;
+  }, []);
+
   // ✅diaryList와 현재 날짜가 변경되었을 때 리렌더링
   useEffect(() => {
     if (diaryList.length >= 1) {
