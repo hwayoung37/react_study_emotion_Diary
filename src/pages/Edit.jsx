@@ -38,7 +38,7 @@ const Edit = () => {
 
   return (
     <div>
-      {/* originData가 있으면 <DiaryEditor /> 출력 */}
+      {/* originData가 있으면 <DiaryEditor /> 출력, isEdit이 true라면 수정 중 */}
       {originData && <DiaryEditor isEdit={true} originData={originData} />}
     </div>
   );

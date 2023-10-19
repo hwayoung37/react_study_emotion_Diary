@@ -41,9 +41,9 @@ const DiaryList = ({ diaryList }) => {
   //감정필터
   const [filter, setFilter] = useState("all");
 
-  //기준에 따라 List 정렬시키는 함수
+  //옵션에 따라 List 정렬시키는 함수
   const getProcessedDiaryList = () => {
-    //감정 필터링 함수
+    //감정 필터링 함수(filterOption)
     const filterCallBack = (item) => {
       if (filter === "good") {
         return parseInt(item.emotion) <= 3;
@@ -52,7 +52,7 @@ const DiaryList = ({ diaryList }) => {
       }
     };
 
-    //데이터의 날짜를 비교해서 정렬시키는 함수
+    //데이터의 날짜를 비교해서 정렬시키는 함수(sortOption)
     const compare = (a, b) => {
       if (sortType === "latest") {
         return parseInt(b.date) - parseInt(a.date); //문자열이 들어올 수 있으므로 숫자형으로 바꿔주기
@@ -65,9 +65,11 @@ const DiaryList = ({ diaryList }) => {
     //diaryList를 json화 시키고 얘를 다시 JSON.parse를 통해 배열로 만들기
     const copyList = JSON.parse(JSON.stringify(diaryList));
 
+    //필터 옵션에 따라 필터링 목록(filteredList) 생성 : filter가 all이면 copyList 그대로 사용하고, 아니면 filterCallBack함수를 사용하여 필터링
     const filteredList =
       filter === "all" ? copyList : copyList.filter((it) => filterCallBack(it));
-
+    //위에서 필터링한 filteredList를 sort메서드를 사용하여 정렬.
+    //sort는 두개의 인자를 받아서 비교하는 비교함수가 필요한데, 위에서 정의한 compare 사용
     const sortedList = filteredList.sort(compare);
 
     return sortedList;
@@ -98,6 +100,7 @@ const DiaryList = ({ diaryList }) => {
       </div>
       {getProcessedDiaryList().map((it) => (
         <DiaryItem key={it.id} {...it} />
+        // {...it} 을 DiaryItem 컴포넌트에 props로 전달
       ))}
     </div>
   );

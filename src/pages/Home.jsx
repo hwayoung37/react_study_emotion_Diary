@@ -9,7 +9,7 @@ const Home = () => {
   //useContext를 통해서 state를 받는다(개발자도구 컴포넌트의 hooks - context에서 확인가능)
   const diaryList = useContext(DiaryStateContext);
 
-  //받은 데이터를 상단 날짜에 따라 다르게 출력되도록 데이터 가공하기위한 state
+  //상단 날짜에 따라 다르게 출력되도록 가공한 데이터 state
   const [data, setData] = useState([]);
 
   // 상단 날짜 state, 초기값은 현재 날짜

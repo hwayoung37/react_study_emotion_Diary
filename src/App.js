@@ -7,6 +7,10 @@ import New from "./pages/New";
 import React, { useEffect, useReducer, useRef } from "react";
 
 //프로젝트 전반적으로 사용될 일기 데이터 state관리 로직
+//newState라는 변수를 사용하여 여기에 일기데이터를 넣도록, 그리고 return newState 해주기(return 없으면 break)
+//✅useReducer의 data와 reducer의 state는 같을까?
+//data는 일기 데이터가 저장된 상태이고, state는 reducer에서 관리되는 상태이다.
+//useReducer를 통해 data는 state의 초기값이 되고 dispatch를 통해 state가 변경되면 data도 변경되어 현재상태를 반영한다.
 const reducer = (state, action) => {
   let newState = [];
   switch (action.type) {

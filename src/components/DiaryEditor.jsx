@@ -18,18 +18,19 @@ const DiaryEditor = ({ isEdit, originData }) => {
 
   const { onCreate, onEdit, onRemove } = useContext(DiaryDispatchContext);
 
-  // <emotionItem>을 클릭하면 onClick prop으로 emotion_id를 받으면서
-  // 현재 어떤 emotion이 선택됐는지 알 수 있다
+  // <emotionItem>을 클릭하면 onClick prop으로 emotion_id를 받으면서 현재 어떤 emotion이 선택됐는지 알 수 있다
+  // useCallback : 함수 재사용
   const handleClickEmote = useCallback((emotion) => {
     setEmotion(emotion);
   }, []);
 
   const navigate = useNavigate();
 
+  //작성완료 클릭 시 수정 또는 작성하는 함수
   const handleSubmit = () => {
     if (content.length < 1) {
       contentRef.current.focus();
-      return; //더 이상 진행 못하도록
+      return; //content에 입력이 안되어있다면 더 이상 진행 못하도록
     }
     if (
       window.confirm(
@@ -37,6 +38,7 @@ const DiaryEditor = ({ isEdit, originData }) => {
       )
     ) {
       if (!isEdit) {
+        //isEdit이 true라면 onEdit실행해서 originData사용, false라면 onCreate실행
         onCreate(date, content, emotion);
       } else {
         onEdit(originData.id, date, content, emotion);
@@ -46,6 +48,7 @@ const DiaryEditor = ({ isEdit, originData }) => {
     navigate("/", { replace: true }); // 홈으로 돌아가게 ✅replace: true 작성 완료 후 뒤로가기 못하도록
   };
 
+  //삭제버튼 클릭 시
   const handleRemove = () => {
     if (window.confirm("정말 삭제하시겠습니까?")) {
       onRemove(originData.id);
@@ -53,6 +56,7 @@ const DiaryEditor = ({ isEdit, originData }) => {
     }
   };
 
+  //isEdit, originData가 변경될 때 state 3개 변경함수 실행
   useEffect(() => {
     if (isEdit) {
       //idEdit가 있을때 이 페이지가 렌더링 됨
